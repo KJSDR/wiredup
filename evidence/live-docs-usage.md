@@ -122,7 +122,7 @@ puppeteer_navigate: { url: "http://localhost:5000" }
 puppeteer_screenshot: { name: "initial-load", width: 500, height: 400 }
 ```
 
-> **Add screenshot here:** `evidence/screenshots/initial-load.png`
+![Initial load](screenshots/initial-load.png)
 
 **Verified:**
 - Dark background renders correctly
@@ -140,7 +140,7 @@ puppeteer_click: { selector: "button[type='submit']" }
 puppeteer_screenshot: { name: "montreal-result", width: 500, height: 500 }
 ```
 
-> **Add screenshot here:** `evidence/screenshots/montreal-result.png`
+![Copenhagen result](screenshots/copenhagen-result.png)
 
 **Verified:**
 - City name "Montreal, Canada" shown
@@ -159,7 +159,7 @@ puppeteer_click: { selector: "button[type='submit']" }
 puppeteer_screenshot: { name: "error-state", width: 500, height: 400 }
 ```
 
-> **Add screenshot here:** `evidence/screenshots/error-state.png`
+![Error state](screenshots/error-state.png)
 
 **Verified:**
 - Red error box appears with "City not found" message
