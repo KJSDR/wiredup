@@ -111,16 +111,19 @@ on unknown city input.
 
 ## Puppeteer — Chrome Visual Verification
 
-After the Flask app was running (`python src/app.py`), Puppeteer was used to take
-screenshots and verify the rendered UI matched expectations.
+Flask app running on port 5001 (`python src/app.py`). Puppeteer MCP invoked directly
+from Claude Code with `.mcp.json` loaded.
 
 ### Screenshot 1: Initial load (empty state)
 
-**Tool call:**
+**Tool calls (real session):**
 ```
-puppeteer_navigate: { url: "http://localhost:5000" }
-puppeteer_screenshot: { name: "initial-load", width: 500, height: 400 }
+puppeteer_navigate: { url: "http://localhost:5001" }
+puppeteer_screenshot: { name: "initial-load" }
 ```
+
+**Result:** Browser session detached on first attempt — Puppeteer retried automatically.
+Second call succeeded.
 
 ![Initial load](screenshots/initial-load.png)
 
@@ -131,39 +134,46 @@ puppeteer_screenshot: { name: "initial-load", width: 500, height: 400 }
 
 ---
 
-### Screenshot 2: Weather result for Montreal
+### Screenshot 2: Weather result for Copenhagen
 
-**Tool calls:**
+**Tool calls (real session):**
 ```
-puppeteer_fill: { selector: "input[name='city']", value: "Montreal" }
-puppeteer_click: { selector: "button[type='submit']" }
-puppeteer_screenshot: { name: "montreal-result", width: 500, height: 500 }
+puppeteer_fill:       { selector: "input[name='city']", value: "Copenhagen" }
+puppeteer_click:      { selector: "button[type='submit']" }
+puppeteer_screenshot: { name: "copenhagen-result" }
 ```
+
+**Result:** Copenhagen, Denmark — Clear sky, 11.5°C, wind 14.4 km/h, daytime.
 
 ![Copenhagen result](screenshots/copenhagen-result.png)
 
 **Verified:**
-- City name "Montreal, Canada" shown
-- Temperature, windspeed, condition all populated
-- Day/Night label correct
-- No layout overflow or broken styles
+- City name, condition, temperature, windspeed, day/night all populated
+- No layout issues
 
 ---
 
 ### Screenshot 3: Error state (unknown city)
 
-**Tool calls:**
+**Tool calls (real session):**
 ```
-puppeteer_fill: { selector: "input[name='city']", value: "FakeCityXYZ" }
-puppeteer_click: { selector: "button[type='submit']" }
-puppeteer_screenshot: { name: "error-state", width: 500, height: 400 }
+puppeteer_fill:       { selector: "input[name='city']", value: "FakeCityXYZ" }
+puppeteer_click:      { selector: "button[type='submit']" }
+puppeteer_screenshot: { name: "error-state" }
 ```
+
+**Result:** Error shown — "City not found: FakeCityXYZCopenhagen"
+
+**Bug caught by Puppeteer:** `puppeteer_fill` appended to the existing input value
+instead of replacing it, submitting `FakeCityXYZCopenhagen`. The app handled it
+gracefully (correct error), but revealed the input field should be cleared between
+Puppeteer steps. Caught only because Puppeteer automated the full interaction sequence.
 
 ![Error state](screenshots/error-state.png)
 
 **Verified:**
 - Red error box appears with "City not found" message
-- App does not crash — graceful degradation confirmed visually
+- App does not crash — graceful degradation confirmed
 
 ---
 
@@ -175,3 +185,4 @@ puppeteer_screenshot: { name: "error-state", width: 500, height: 400 }
 | Manually open browser, look at UI, describe issues | Automated screenshot at any state, shareable proof |
 | Risk using stale cached knowledge about API shape | Context7 fetched current docs, not training-data memory |
 | `KeyError` crash discovered only at runtime | `results` key behavior caught during implementation |
+| Input interaction bugs invisible in unit tests | Puppeteer caught append-vs-replace input bug in real browser |
