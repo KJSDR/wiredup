@@ -2,6 +2,24 @@
 
 Flask weather app demonstrating live MCP tool integrations.
 
+## Progress
+
+### V1.0 — Configuration & Live Docs
+- [x] Configure at least 2 protocol servers (`.mcp.json`)
+- [x] Build a feature that needs a third-party library API
+- [x] Capture evidence of live doc queries during development
+- [x] Save evidence in `evidence/live-docs-usage.md`
+
+### V1.1 — Second Integration
+- [x] Use Puppeteer for Chrome visual verification (screenshots, bug catch)
+- [x] Document impact in `evidence/live-docs-usage.md`
+
+### V1.2 — Hallucination Comparison & Polish
+- [x] Compare agent output with vs. without live docs
+- [x] Document side-by-side in `evidence/hallucination-comparison.md`
+- [x] Feature complete with test-first workflow (7/7 tests pass)
+- [x] README summarizes servers, workflow impact, and next steps
+
 ## MCP Servers
 
 | Server | Purpose |
